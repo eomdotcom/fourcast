@@ -178,6 +178,31 @@ input[type="file"] {
   color: var(--text);
 }
 
+textarea {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(122, 215, 255, 0.25);
+  background: rgba(9, 15, 27, 0.75);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+textarea::placeholder {
+  color: var(--soft);
+}
+
+textarea:focus-visible {
+  outline: none;
+  border-color: rgba(122, 215, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(122, 215, 255, 0.14);
+}
+
 input::file-selector-button {
   padding: 0.7rem 1rem;
   border: none;
