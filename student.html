@@ -1,20 +1,76 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
-    <title>Student Details</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Photosphere - Student details</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <h1>Student Details</h1>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <span class="brand">Photosphere</span>
+    <a href="index.html">Upload data</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="student.html">Students</a>
+  </nav>
 
-    <p><strong>Name:</strong> Hani Patel</p>
-    <p><strong>Student ID:</strong> 1234567</p>
-    <p><strong>Degree:</strong> Bachelor of Commerce</p>
-    <p><strong>Major:</strong> Business Analytics</p>
-    <p><strong>Year:</strong> 4th Year</p>
+  <main>
+    <h1>Student details</h1>
+    <p>A zone is a prompt to look closer, not a decision about a student.</p>
 
-</body>
-</html>
+    <!-- Profile summary -->
+    <section class="student-card">
+      <span class="badge" id="zone">Steady Star</span>
+      <h2 id="student-name">Student name</h2>
+      <p>
+        Learner ID <span id="learner-id">L0001</span> &middot;
+        Course <span id="course">INFOSYS200</span> &middot;
+        Week <span id="week">5</span>
+      </p>
+
+      <!-- Key indicators at the selected checkpoint -->
+      <div class="metric-grid">
+        <div class="metric">
+          <span class="metric-label">Engagement index</span>
+          <span class="metric-value" id="engagement-index">--</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Assessments submitted</span>
+          <span class="metric-value" id="assessments">--</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Logins per week</span>
+          <span class="metric-value" id="logins">--</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Days since check-in</span>
+          <span class="metric-value" id="check-in">--</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Plain-language reasons behind the placement -->
+    <section class="panel student-card">
+      <h2>Why this zone</h2>
+      <ul class="student-list" id="reasons">
+        <li>Reasons will appear here once a dataset is loaded.</li>
+      </ul>
+    </section>
+
+    <!-- Recent activity -->
+    <section class="panel student-card">
+      <h2>Recent activity</h2>
+      <ul class="student-list" id="activity">
+        <li>Activity will appear here once a dataset is loaded.</li>
+      </ul>
+    </section>
+
+    <!-- Adviser notes -->
+    <section class="panel student-card">
+      <h2>Adviser notes</h2>
+      <label for="notes">Record your own view</label>
+      <textarea id="notes" rows="4"></textarea>
+      <button id="save-note">Save note</button>
