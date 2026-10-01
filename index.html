@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Photosphere - Upload data</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <span class="brand">Photosphere</span>
+    <a href="index.html">Upload data</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="student.html">Students</a>
+  </nav>
+
+  <main>
+    <h1>Load your dataset</h1>
+    <p>Upload a CSV of synthetic student engagement records. It is saved in this browser and replaces any earlier upload.</p>
+
+    <!-- File upload -->
+    <section class="upload-box">
+      <label for="file">Choose a CSV file</label>
+      <input type="file" id="file" accept=".csv">
+    </section>
+
+    <!-- Shows messages such as "Saved: 24 students" or an error -->
+    <p id="status">No dataset loaded yet.</p>
+
+    <!-- Buttons -->
+    <button id="use-sample">Use the sample dataset instead</button>
+    <button id="open-dashboard" disabled>Open the dashboard</button>
+    <button id="delete-data">Delete the saved dataset</button>
+  </main>
+
+</body>
+</html>
