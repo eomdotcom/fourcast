@@ -23,7 +23,7 @@
 
     <!-- Profile summary -->
     <section class="student-card">
-      <span class="badge" id="zone">Steady Star</span>
+      <span class="badge" id="zone">--</span>
       <h2 id="student-name">Student name</h2>
       <p>
         Learner ID <span id="learner-id">L0001</span> &middot;
@@ -74,10 +74,12 @@
     import { supabase } from './supabase.js';
   
     async function loadStudent() {
+      const studentId = new URLSearchParams(window.location.search).get('id');
+
       const { data, error } = await supabase
         .from('students')
         .select('*')
-        .eq('student_name', 'Noah Martin')
+        .eq('id', studentId)
         .single();
   
       if (error) {
@@ -91,6 +93,16 @@
         document.getElementById('course').textContent = data.course_code;
         document.getElementById('week').textContent = data.week;
         
+        // Determine student zone based on concern score
+        const score = Number(data.concern_score);
+        if (score <= 30) {
+          document.getElementById('zone').textContent = 'Calm Orbit';
+        } else if (score <= 60) {
+          document.getElementById('zone').textContent = 'Steady Star';
+        } else {
+          document.getElementById('zone').textContent = 'Solar Flare Zone';
+        }
+
         // Update the 4 metric cards
         document.getElementById('concern-score').textContent = data.concern_score ?? '--';
         document.getElementById('assessments').textContent = data.quiz_attempts ?? '--';
