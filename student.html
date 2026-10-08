@@ -34,8 +34,8 @@
       <!-- Key indicators at the selected checkpoint -->
       <div class="metric-grid">
         <div class="metric">
-          <span class="metric-label">Engagement index</span>
-          <span class="metric-value" id="engagement-index">--</span>
+          <span class="metric-label">Concern Score</span>
+          <span class="metric-value" id="concern-score">--</span>
         </div>
         <div class="metric">
           <span class="metric-label">Assessments submitted</span>
@@ -52,13 +52,6 @@
       </div>
     </section>
 
-    <!-- Plain-language reasons behind the placement -->
-    <section class="panel student-card">
-      <h2>Why this zone</h2>
-      <ul class="student-list" id="reasons">
-        <li>Reasons will appear here once a dataset is loaded.</li>
-      </ul>
-    </section>
 
     <!-- Recent activity -->
     <section class="panel student-card">
@@ -76,6 +69,38 @@
       <button id="save-note">Save note</button>
     </section>
   </main>
+
+  <script type="module">
+    import { supabase } from './supabase.js';
+  
+    async function loadStudent() {
+      const { data, error } = await supabase
+        .from('students')
+        .select('*')
+        .eq('student_name', 'Noah Martin')
+        .single();
+  
+      if (error) {
+        console.error('Error fetching student:', error.message);
+        return;
+      }
+  
+      if (data) {
+        document.getElementById('student-name').textContent = data.student_name;
+        document.getElementById('learner-id').textContent = data.id;
+        document.getElementById('course').textContent = data.course_code;
+        document.getElementById('week').textContent = data.week;
+        
+        // Update the 4 metric cards
+        document.getElementById('concern-score').textContent = data.concern_score ?? '--';
+        document.getElementById('assessments').textContent = data.quiz_attempts ?? '--';
+        document.getElementById('logins').textContent = data.distinct_logins_per_week ?? '--';
+        document.getElementById('check-in').textContent = data.days_since_last_check_in ?? '--';
+      }
+    }
+  
+    loadStudent();
+  </script>
 </body>
 </html>
 
