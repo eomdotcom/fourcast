@@ -23,9 +23,6 @@ fileInput.addEventListener('change', async () => {
 
     // Convert empty cells to null
     const records = result.data.map(row => {
-        delete row.accessibility_support_flag;
-        delete row.acessibility_support_flag;
-
       for (const key in row) {
         if (row[key] === '') row[key] = null;
       }
