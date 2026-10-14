@@ -5,7 +5,7 @@ async function loadStudents() {
     // Fetch students from Supabase
     const { data: students, error } = await supabase
         .from('students')
-        .select('id, student_name, concern_score, week')
+        .select('student_id, student_name, concern_score, week')
         .order('concern_score', { ascending: false });
 
     if (error) {
