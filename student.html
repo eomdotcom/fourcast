@@ -106,7 +106,11 @@
       setText('student-name', title);
       activityList.innerHTML = '';
       const li = document.createElement('li');
-      li.innerHTML = `${message} <a href="dashboard.html">Back to the dashboard</a>`;
+      li.append(message + ' ');
+      const a = document.createElement('a');
+      a.href = 'dashboard.html';
+      a.textContent = 'Back to the dashboard';
+      li.appendChild(a);
       activityList.appendChild(li);
     }
 
@@ -174,7 +178,9 @@
         const label = `Week ${r.weekNum}: score ${r.concern_score ?? '--'} (${z ? z.name : 'no score'})`;
 
         if (r === row) {
-          li.innerHTML = `<strong>${label}</strong> (viewing)`;
+          const strong = document.createElement('strong');
+          strong.textContent = label;
+          li.append(strong, ' (viewing)');
         } else {
           const a = document.createElement('a');
           a.href = `student.html?id=${encodeURIComponent(r.student_id)}&week=${r.weekNum}`;
