@@ -23,12 +23,12 @@
 
     <!-- Profile summary -->
     <section class="student-card">
-      <span class="badge" id="zone">Steady Star</span>
-      <h2 id="student-name">Student name</h2>
+      <span class="badge" id="zone">--</span>
+      <h2 id="student-name">Loading student...</h2>
       <p>
-        Learner ID <span id="learner-id">L0001</span> &middot;
-        Course <span id="course">INFOSYS200</span> &middot;
-        Week <span id="week">5</span>
+        Learner ID <span id="learner-id">--</span> &middot;
+        Course <span id="course">--</span> &middot;
+        Week <span id="week">--</span>
       </p>
 
       <!-- Key indicators at the selected checkpoint -->
@@ -72,33 +72,119 @@
 
   <script type="module">
     import { supabase } from './supabase.js';
-  
+
+    // 1. Read ?id=...&week=... from the URL (set by the dashboard links)
+    const params = new URLSearchParams(window.location.search);
+    const studentId = params.get('id');
+    const requestedWeek = params.get('week');
+
+    // Same week parsing as the dashboard: 5, "5" or "Week 5" -> 5
+    function parseWeek(value) {
+      if (value === null || value === undefined) return null;
+      const match = String(value).match(/\d+/);
+      return match ? Number(match[0]) : null;
+    }
+
+    // Same thresholds as the dashboard
+    function zoneFor(score) {
+      if (score === null || score === '' || Number.isNaN(Number(score))) return null;
+      const s = Number(score);
+      if (s <= 30) return { name: 'Calm Orbit', cls: 'calm' };
+      if (s <= 60) return { name: 'Steady Star', cls: 'steady' };
+      return { name: 'Solar Flare Zone', cls: 'flare' };
+    }
+
+    // Shows "--" for empty values instead of "null" or "undefined"
+    function setText(id, value) {
+      document.getElementById(id).textContent =
+        value === null || value === undefined || value === '' ? '--' : value;
+    }
+
+    const activityList = document.getElementById('activity');
+
+    function showMessage(title, message) {
+      setText('student-name', title);
+      activityList.innerHTML = '';
+      const li = document.createElement('li');
+      li.innerHTML = `${message} <a href="dashboard.html">Back to the dashboard</a>`;
+      activityList.appendChild(li);
+    }
+
     async function loadStudent() {
+      // Opened from the navbar, with no student chosen
+      if (!studentId) {
+        showMessage('No student selected', 'Pick a student from the dashboard.');
+        return;
+      }
+
+      // 2. Fetch every week's row for this student
       const { data, error } = await supabase
         .from('students')
         .select('*')
-        .eq('student_name', 'Noah Martin')
-        .single();
-  
+        .eq('student_id', studentId);
+
+      // TRACE: remove once it works
+      console.log('Student id:', studentId, 'week:', requestedWeek, 'rows:', data, 'error:', error);
+
       if (error) {
-        console.error('Error fetching student:', error.message);
+        showMessage('Could not load student', error.message + '.');
         return;
       }
-  
-      if (data) {
-        document.getElementById('student-name').textContent = data.student_name;
-        document.getElementById('learner-id').textContent = data.id;
-        document.getElementById('course').textContent = data.course_code;
-        document.getElementById('week').textContent = data.week;
-        
-        // Update the 4 metric cards
-        document.getElementById('concern-score').textContent = data.concern_score ?? '--';
-        document.getElementById('assessments').textContent = data.quiz_attempts ?? '--';
-        document.getElementById('logins').textContent = data.distinct_logins_per_week ?? '--';
-        document.getElementById('check-in').textContent = data.days_since_last_check_in ?? '--';
+      if (!data || data.length === 0) {
+        showMessage('Student not found', `No rows for student_id "${studentId}".`);
+        return;
       }
+
+      // 3. Sort their rows by week and pick the one to show
+      const rows = data
+        .map(row => ({ ...row, weekNum: parseWeek(row.week) }))
+        .sort((a, b) => a.weekNum - b.weekNum);
+
+      const wanted = parseWeek(requestedWeek);
+      const current = rows.find(r => r.weekNum === wanted) || rows[rows.length - 1];
+
+      render(current, rows);
     }
-  
+
+    function render(row, rows) {
+      // Profile
+      document.title = `Photosphere - ${row.student_name ?? 'Student'}`;
+      setText('student-name', row.student_name);
+      setText('learner-id', row.student_id);
+      setText('course', row.course_code);
+      setText('week', row.weekNum);
+
+      // Zone badge
+      const zone = zoneFor(row.concern_score);
+      const badge = document.getElementById('zone');
+      badge.textContent = zone ? zone.name : 'No score';
+      badge.className = 'badge' + (zone ? ' ' + zone.cls : '');
+
+      // Metric cards
+      setText('concern-score', row.concern_score);
+      setText('assessments', row.quiz_attempts);
+      setText('logins', row.distinct_logins_per_week);
+      setText('check-in', row.days_since_last_check_in);
+
+      // Recent activity: one line per week, each a link to that week
+      activityList.innerHTML = '';
+      rows.forEach(r => {
+        const z = zoneFor(r.concern_score);
+        const li = document.createElement('li');
+        const label = `Week ${r.weekNum}: score ${r.concern_score ?? '--'} (${z ? z.name : 'no score'})`;
+
+        if (r === row) {
+          li.innerHTML = `<strong>${label}</strong> (viewing)`;
+        } else {
+          const a = document.createElement('a');
+          a.href = `student.html?id=${encodeURIComponent(r.student_id)}&week=${r.weekNum}`;
+          a.textContent = label;
+          li.appendChild(a);
+        }
+        activityList.appendChild(li);
+      });
+    }
+
     loadStudent();
   </script>
 </body>
