@@ -17,10 +17,10 @@ Esuru Nanayakkara, Hani Patel, Rafael Carreon, Sophia Kwong
 Open the project with VS Code "Go Live" (opening `index.html` directly won't work,
 because the scripts are ES modules). Upload a CSV on the Upload page, then open the dashboard.
 
-Data is stored in Supabase (`students` table). Each upload replaces the previous one.
+Data is stored in Supabase (`students` table). Each upload adds new rows or replaces the duplicate rows.
 The CSV needs at least `student_id`, `student_name`, `week` and `concern_score` columns.
 
 ## Pages
-- `index.html`: upload a CSV to Supabase (replaces earlier uploads), or delete the saved dataset
+- `index.html`: upload a CSV to Supabase, or delete the saved dataset
 - `dashboard.html`: zone map with a week selector built from the `week` column, students worth a look, fairness check
 - `student.html`: one student's details for a chosen week, zone badge, key metrics, week-by-week activity and adviser notes
