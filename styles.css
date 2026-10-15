@@ -398,6 +398,21 @@ main a:hover {
   margin-bottom: 0.75rem;
 }
 
+.badge.calm {
+  background: rgba(126, 240, 211, 0.15);
+  border-color: rgba(126, 240, 211, 0.45);
+}
+
+.badge.steady {
+  background: rgba(155, 141, 255, 0.18);
+  border-color: rgba(155, 141, 255, 0.45);
+}
+
+.badge.flare {
+  background: rgba(255, 191, 122, 0.18);
+  border-color: rgba(255, 191, 122, 0.5);
+}
+
 @media (max-width: 720px) {
   .navbar {
     padding: 0.9rem 1rem;

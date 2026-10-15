@@ -72,13 +72,23 @@ function showWeek(week) {
   steadyList.innerHTML = '';
   flareList.innerHTML = '';
 
+  let skipped = 0;
+
   rows.forEach(student => {
-    const score = Number(student.concern_score);
+    const raw = student.concern_score;
+    const score = Number(raw);
+
+    // A blank score must not land in Calm Orbit
+    if (raw === null || raw === '' || Number.isNaN(score)) {
+      console.warn('No usable concern_score for', student);
+      skipped++;
+      return;
+    }
 
     const li = document.createElement('li');
     const link = document.createElement('a');
     link.textContent = student.student_name || `Student ${student.student_id}`;
-    link.href = `student.html?id=${student.student_id}&week=${week}`;
+    link.href = `student.html?id=${encodeURIComponent(student.student_id)}&week=${week}`;
     li.appendChild(link);
 
     if (score <= 30) {
@@ -90,7 +100,8 @@ function showWeek(week) {
     }
   });
 
-  statusEl.textContent = `Showing week ${week}: ${rows.length} students`;
+  statusEl.textContent = `Showing week ${week}: ${rows.length - skipped} students` +
+    (skipped ? ` (${skipped} skipped, no score)` : '');
 }
 
 loadStudents();
