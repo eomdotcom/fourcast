@@ -9,9 +9,18 @@ openBtn.addEventListener('click', () => {
   window.location.href = 'dashboard.html';
 });
 
+// Deletes only the rows for the given weeks, so other weeks are kept
+async function clearWeeks(weeks) {
+  const { error } = await supabase
+    .from('students')
+    .delete()
+    .in('week', weeks);
+  if (error) throw error;
+}
+
 // Deletes every row. Supabase refuses a delete with no filter,
 // so this matches every row that has a student_id.
-async function clearTable() {
+async function clearAll() {
   const { error } = await supabase
     .from('students')
     .delete()
@@ -31,7 +40,7 @@ async function refreshStatus() {
   }
 
   if (count > 0) {
-    status.textContent = `${count} rows saved. Upload a new CSV to replace them.`;
+    status.textContent = `${count} rows saved in total.`;
     openBtn.disabled = false;
   } else {
     status.textContent = 'No dataset loaded yet.';
@@ -39,7 +48,7 @@ async function refreshStatus() {
   }
 }
 
-// Upload: check the CSV first, then replace the old data
+// Upload: check the CSV first, then replace only the weeks it contains
 fileInput.addEventListener('change', async () => {
   const file = fileInput.files[0];
   if (!file) return;
@@ -73,15 +82,21 @@ fileInput.addEventListener('change', async () => {
     if (!('student_id' in records[0]) || !('week' in records[0])) {
       throw new Error('The CSV needs student_id and week columns.');
     }
+    if (records.some(r => r.week === null)) {
+      throw new Error('Some rows have no week value.');
+    }
 
-    status.textContent = 'Replacing earlier data...';
-    await clearTable();
+    // Which weeks does this file contain? e.g. ["3"]
+    const weeksInFile = [...new Set(records.map(r => r.week))];
+
+    status.textContent = `Replacing week ${weeksInFile.join(', ')}...`;
+    await clearWeeks(weeksInFile);
 
     const { error } = await supabase.from('students').insert(records);
     if (error) throw error;
 
-    status.textContent = `Saved ${records.length} rows.`;
-    openBtn.disabled = false;
+    await refreshStatus();
+    status.textContent = `Saved ${records.length} rows for week ${weeksInFile.join(', ')}. ` + status.textContent;
 
   } catch (error) {
     console.error(error);
@@ -91,12 +106,12 @@ fileInput.addEventListener('change', async () => {
   fileInput.value = '';
 });
 
-// Delete button
+// Delete button: clears every week
 deleteBtn.addEventListener('click', async () => {
   if (!confirm('Delete all student rows from Supabase? This cannot be undone.')) return;
 
   try {
-    await clearTable();
+    await clearAll();
     await refreshStatus();
   } catch (error) {
     console.error(error);
