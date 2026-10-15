@@ -20,14 +20,11 @@
     <h1>Dashboard</h1>
     <p>A zone is a prompt to look closer, not a decision about a student.</p>
 
-    <!-- Week buttons -->
-    <div class="weeks">
-      <button>Week 1</button>
-      <button>Week 5</button>
-      <button>Week 9</button>
-    </div>
+    <!-- Week buttons are built by dashboard.js from the week column -->
+    <div class="weeks" id="week-buttons"></div>
+    <p id="dashboard-status">Loading students...</p>
 
-    <!-- The three zones -->
+    <!-- The three zones (filled by dashboard.js) -->
     <section class="zones">
 
       <div class="zone calm">
@@ -63,7 +60,9 @@
       <h2>Fairness check</h2>
     </section>
 
+  </main>
+
   <script type="module" src="dashboard.js"></script>
-  
+
 </body>
 </html>

@@ -265,6 +265,12 @@ button:disabled {
   box-shadow: inset 0 0 0 1px rgba(155, 141, 255, 0.1);
 }
 
+.weeks button.active {
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  color: #061621;
+  border-color: transparent;
+}
+
 .zones {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
